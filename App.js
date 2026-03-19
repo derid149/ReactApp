@@ -1,90 +1,72 @@
 import React from "react";
 import "./App.css";
+import reposData from "./reposData";
 
 function App() {
-  const forLoopNumbers = [];
-  for (let i = 1; i <= 5; i += 1) {
-    forLoopNumbers.push(i);
-  }
-
-  const whileMessages = [];
-  let counter = 1;
-  while (counter <= 3) {
-    whileMessages.push(`Durchlauf ${counter}`);
-    counter += 1;
-  }
-
-  const mappedTodos = [
-    { id: 1, text: "Komponenten strukturieren" },
-    { id: 2, text: "Zustand verwalten" },
-    { id: 3, text: "Listen mit map() rendern" },
-  ];
+  const totalStars = reposData.reduce((sum, repo) => sum + repo.stars, 0);
+  const totalForks = reposData.reduce((sum, repo) => sum + repo.forks, 0);
 
   return (
     <div className="App">
       <header className="App-header">
-        <div className="App-badge">Schleifen</div>
+        <div className="App-badge">Repositories</div>
         <div>
-          <p className="App-kicker">Kurzer React-Leitfaden</p>
-          <h1 className="App-title">Drei Wege, um eine Schleife zu schreiben</h1>
+          <p className="App-kicker">Projektübersicht</p>
+          <h1 className="App-title">Meine Repos im Überblick</h1>
           <p className="App-subtitle">
-            For-, while- und map-Schleifen helfen dir, wiederholende Aufgaben in
-            React zu erledigen.
+            {reposData.length} Repositories · {totalStars} Sterne ·{" "}
+            {totalForks} Forks
           </p>
         </div>
       </header>
 
       <main className="App-grid">
-        <section className="App-card">
-          <p className="App-label">For-Schleife</p>
-          <h2 className="App-heading">Zahlen 1 bis 5 zählen</h2>
-          <p>
-            Die klassische for-Schleife eignet sich gut, wenn du den Start- und
-            Endpunkt kennst.
-          </p>
-          <ul className="App-list">
-            {forLoopNumbers.map((number) => (
-              <li key={number} className="App-listItem">
-                <span className="App-pill">{number}</span>
-                <span>Zahl aus der For-Schleife</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {reposData.map((repo) => (
+          <section className="App-card" key={repo.id}>
+            <div className="App-cardHeader">
+              <a
+                className="App-repoName"
+                href={repo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {repo.name}
+              </a>
+              <span
+                className={
+                  "App-visibility" +
+                  (repo.visibility === "private" ? " App-visibility--private" : "")
+                }
+              >
+                {repo.visibility}
+              </span>
+            </div>
 
-        <section className="App-card">
-          <p className="App-label">While-Schleife</p>
-          <h2 className="App-heading">Solange eine Bedingung gilt</h2>
-          <p>
-            Eine while-Schleife wiederholt sich, bis eine Bedingung nicht mehr
-            erfüllt ist.
-          </p>
-          <ol className="App-list">
-            {whileMessages.map((message) => (
-              <li key={message} className="App-listItem">
-                <span className="App-pill">{message}</span>
-                <span>Status einer While-Schleife</span>
-              </li>
-            ))}
-          </ol>
-        </section>
+            <p className="App-description">{repo.description}</p>
 
-        <section className="App-card">
-          <p className="App-label">map()</p>
-          <h2 className="App-heading">Arrays elegant rendern</h2>
-          <p>
-            Mit <code>map()</code> wandelst du Daten direkt in React-Elemente
-            um und erhältst automatisch eindeutige Schlüssel.
-          </p>
-          <ul className="App-list">
-            {mappedTodos.map((todo) => (
-              <li key={todo.id} className="App-listItem">
-                <span className="App-pill">{todo.id}</span>
-                <span>{todo.text}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+            <div className="App-lang">
+              <span
+                className="App-langDot"
+                style={{ backgroundColor: repo.languageColor }}
+              />
+              <span>{repo.language}</span>
+            </div>
+
+            <div className="App-stats">
+              <span className="App-stat">★ {repo.stars}</span>
+              <span className="App-stat">⑂ {repo.forks}</span>
+              <span className="App-stat">⊙ {repo.openIssues} Issues</span>
+            </div>
+
+            <div className="App-meta">
+              {repo.license && (
+                <span className="App-metaItem">⚖ {repo.license}</span>
+              )}
+              <span className="App-metaItem">Erstellt: {repo.createdAt}</span>
+              <span className="App-metaItem">Update: {repo.lastUpdate}</span>
+            </div>
+          </section>
+        ))}
       </main>
     </div>
   );
